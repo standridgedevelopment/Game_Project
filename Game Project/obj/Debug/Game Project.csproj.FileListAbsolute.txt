@@ -1,0 +1,14 @@
+C:\ElevenFiftyProjects\SD 65\Game Project\Game Project\bin\Debug\Game Project.exe.config
+C:\ElevenFiftyProjects\SD 65\Game Project\Game Project\bin\Debug\Game Project.exe
+C:\ElevenFiftyProjects\SD 65\Game Project\Game Project\bin\Debug\Game Project.pdb
+C:\ElevenFiftyProjects\SD 65\Game Project\Game Project\obj\Debug\Game Project.csprojAssemblyReference.cache
+C:\ElevenFiftyProjects\SD 65\Game Project\Game Project\obj\Debug\Game Project.csproj.CoreCompileInputs.cache
+C:\ElevenFiftyProjects\SD 65\Game Project\Game Project\obj\Debug\Game Project.exe
+C:\ElevenFiftyProjects\SD 65\Game Project\Game Project\obj\Debug\Game Project.pdb
+C:\ElevenFiftyProjects\SD 65\Game_Project\Game Project\bin\Debug\Game Project.exe.config
+C:\ElevenFiftyProjects\SD 65\Game_Project\Game Project\bin\Debug\Game Project.exe
+C:\ElevenFiftyProjects\SD 65\Game_Project\Game Project\bin\Debug\Game Project.pdb
+C:\ElevenFiftyProjects\SD 65\Game_Project\Game Project\obj\Debug\Game Project.csprojAssemblyReference.cache
+C:\ElevenFiftyProjects\SD 65\Game_Project\Game Project\obj\Debug\Game Project.csproj.CoreCompileInputs.cache
+C:\ElevenFiftyProjects\SD 65\Game_Project\Game Project\obj\Debug\Game Project.exe
+C:\ElevenFiftyProjects\SD 65\Game_Project\Game Project\obj\Debug\Game Project.pdb
