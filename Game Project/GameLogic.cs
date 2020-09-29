@@ -91,11 +91,11 @@ namespace Game_Project
 
         public static void CombatScene()
         {
-            System.Media.SoundPlayer sound =
+            /*System.Media.SoundPlayer sound =
             new System.Media.SoundPlayer();
             sound.SoundLocation = @"\ElevenFiftyProjects\SD 65\Game_Project\Battle.wav";
             sound.Load();
-            sound.Play();
+            sound.Play();*/
 
             _heroes[0].runAway = false;
             double experienceForFight = 0;
@@ -174,11 +174,11 @@ namespace Game_Project
                 }
             }
             Console.Clear();
-            System.Media.SoundPlayer sound2 =
+            /*System.Media.SoundPlayer sound2 =
             new System.Media.SoundPlayer();
             sound2.SoundLocation = @"\ElevenFiftyProjects\SD 65\Game_Project\Victory.wav";
             sound2.Load();
-            sound2.Play();
+            sound2.Play();*/
             Money += moneyForFight;
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"${moneyForFight} recieved.");
