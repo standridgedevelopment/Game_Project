@@ -12,3 +12,8 @@ C:\ElevenFiftyProjects\SD 65\Game_Project\Game Project\obj\Debug\Game Project.cs
 C:\ElevenFiftyProjects\SD 65\Game_Project\Game Project\obj\Debug\Game Project.csproj.CoreCompileInputs.cache
 C:\ElevenFiftyProjects\SD 65\Game_Project\Game Project\obj\Debug\Game Project.exe
 C:\ElevenFiftyProjects\SD 65\Game_Project\Game Project\obj\Debug\Game Project.pdb
+C:\ElevenFiftyProjects\SD 65\Game_Project\Game Project\bin\Debug\DocumentFormat.OpenXml.dll
+C:\ElevenFiftyProjects\SD 65\Game_Project\Game Project\bin\Debug\System.IO.Packaging.dll
+C:\ElevenFiftyProjects\SD 65\Game_Project\Game Project\bin\Debug\DocumentFormat.OpenXml.xml
+C:\ElevenFiftyProjects\SD 65\Game_Project\Game Project\bin\Debug\System.IO.Packaging.xml
+C:\ElevenFiftyProjects\SD 65\Game_Project\Game Project\obj\Debug\Game Project.csproj.CopyComplete
