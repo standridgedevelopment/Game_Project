@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Schema;
 
@@ -80,12 +81,15 @@ namespace Game_Project
         public double BasicAttack(Enemy enemy)
         {
             Console.WriteLine($"{Name} punches {enemy.Name} in the face. POW!");
+            Thread.Sleep(1000);
             return Strength;
+            
         }
         public void TakeDamage(double damage)
         {
             Health -= damage;
             Console.WriteLine($"{Name} takes {damage} damage!");
+            Thread.Sleep(800);
         }
         public bool runAway;
        
@@ -125,7 +129,7 @@ namespace Game_Project
             TurnMeter = 0;
             Name = "Nightwing";
             new List<string>();
-            SkillList.Add("Shark Repelent (20)");
+            SkillList.Add("(Attack All: Shark Repelent (20)");
         }
         public double SharkRepelent(Enemy enemy) 
         {
@@ -174,7 +178,7 @@ namespace Game_Project
             TurnMeter = 0;
             Name = "Batwoman";
             new List<string>();
-            SkillList.Add("Summon Red Knight One (35)");
+            SkillList.Add("(Attack All) Summon Red Knight One (35)");
         }
 
     }

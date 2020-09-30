@@ -18,17 +18,17 @@ namespace Game_Project
 
         private void MainMenu()
         {
-            System.Media.SoundPlayer sound =
+            /*System.Media.SoundPlayer sound =
             new System.Media.SoundPlayer();
             sound.SoundLocation = @"\ElevenFiftyProjects\SD 65\Game_Project\Main.wav";
             sound.Load();
-            sound.Play();
+            sound.Play();*/
             bool runGame = true;
             while (runGame == true)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("Welcome to Gotham Knights\n");
-                Console.ForegroundColor = ConsoleColor.Green;
+                Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine("1: New Game");
                 Console.WriteLine("2: Exit\n");
                 string userInput = Console.ReadLine().ToLower();
@@ -64,21 +64,24 @@ namespace Game_Project
             Console.Write("Batman");
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine(" has been captured. You need to find him.");
-            Thread.Sleep(1000);
-            Console.WriteLine("You are Batman's apprentice, Dick Grayson. Now known as Nightwing!");
-            Thread.Sleep(2500);
+            Thread.Sleep(5000);
+            Console.Write("You are Batman's apprentice, Dick Grayson. Now known as");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine(" Nightwing!");
+            Thread.Sleep(5000);
             var mainPlayer = new Nightwing();
             GameLogic.AddHero(mainPlayer);
             while (inGotham == true)
             {
-                System.Media.SoundPlayer sound =
+                /*System.Media.SoundPlayer sound =
                 new System.Media.SoundPlayer();
                 sound.SoundLocation = @"\ElevenFiftyProjects\SD 65\Game_Project\Field.wav";
                 sound.Load();
-                sound.Play();
+                sound.Play();*/
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("Welcome to Gotham City");
+                Thread.Sleep(500);
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("What do you want to do?:\n" +
                                       "1) Visit Lucious Fox for new gear \n" +
@@ -149,11 +152,11 @@ namespace Game_Project
             int searchProgress = 0;
             while (inStreets == true)
                 {
-                System.Media.SoundPlayer sound =
+                /*System.Media.SoundPlayer sound =
                 new System.Media.SoundPlayer();
                 sound.SoundLocation = @"\ElevenFiftyProjects\SD 65\Game_Project\Field.wav";
                 sound.Load();
-                sound.Play();
+                sound.Play();*/
                  
                 Console.Clear();
                 Console.WriteLine("What do you want to do?:\n" +
@@ -270,6 +273,7 @@ namespace Game_Project
                         return;
                        
                     default:
+                        Console.Clear();
                         Console.WriteLine("Please make a valid selection\n" +
                             "Press any key to continue...");
                         Console.ReadKey();

@@ -70,140 +70,68 @@ namespace Game_Project
             _currentEnemies.Add(thug2);
 
         }
-        
-
-        //Do Damage
-        /*public static void DamageEnemy(Enemy target, int damage)
+        public static void DisplayEnemies()
         {
-            Enemy currentEnemy = target;
-            currentEnemy.Health -= damage;
-        }
-        public static void DamageHero(Hero target, int damage)
-        {
-            Hero currentHero = target;
-            currentHero.Health -= damage;
-        }*/
-        public static List<Enemy> GetListOfEnemies()
-        {
-            return _currentEnemies;
-        }
-        
-
-        public static void CombatScene()
-        {
-            /*System.Media.SoundPlayer sound =
-            new System.Media.SoundPlayer();
-            sound.SoundLocation = @"\ElevenFiftyProjects\SD 65\Game_Project\Battle.wav";
-            sound.Load();
-            sound.Play();*/
-
-            _heroes[0].runAway = false;
-            double experienceForFight = 0;
-            int moneyForFight = 0;
-            int count = 0;
-            bool combatInProgress = true;
-            int enemiesDefeated = 0;
-            while (combatInProgress == true)
+            int count = 1;
+            foreach (var Enemy in _currentEnemies)
             {
-                if (_heroes[0].runAway == true)
+                if (Enemy.isDead == false)
                 {
-                    combatInProgress = false;
-                    return;
+                    Enemy.TurnMeter += Enemy.Dexterity;
                 }
-                Thread.Sleep(1000);
-                count = 1;
-                Console.Clear();
+                Console.Write($"{count})");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write($" {Enemy.Name}");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine($"\nHealth: {Enemy.Health} | Turn Meter: {Enemy.TurnMeter}\n");
 
-                foreach (var Enemy in _currentEnemies)
-                {
-                    if (Enemy.isDead == false)
-                    {
-                        Enemy.TurnMeter += Enemy.Dexterity;
-                    }
-                    Console.WriteLine($"{count}) {Enemy.Name}\nHealth: {Enemy.Health} | Turn Meter: {Enemy.TurnMeter}\n");
-                    count++;
+                count++;
 
-                }
-                Console.WriteLine();
-                Console.WriteLine();
-                Console.WriteLine();
-                foreach (var Hero in _heroes)
-                {
-                    Hero.TurnMeter += Hero.Dexterity;
-                    Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.Write($"{Hero.Name}");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine($"\n" +
-                        $"Health: {Hero.Health} | Energy: {Hero.Energy} | Turn Meter: {Hero.TurnMeter}");
-                    Console.WriteLine();
-                    count++;
-                }
-               
-                    if (_heroes[0].TurnMeter >= 75)
-                    {
-                        _heroes[0].TurnMeter = 0;
-                        HeroTakeTurn(_heroes[0]);
-                    }
-                    if (_heroes[_heroes.Count - 1].TurnMeter >= 75)
-                    {
-                    _heroes[_heroes.Count - 1].TurnMeter = 0;
-                        HeroTakeTurn(_heroes[_heroes.Count - 1]);
-                    
-                }
-                foreach (var enemy in _currentEnemies)
-                {
-                    if (enemy.TurnMeter >= 100)
-                    {
-                        enemy.TurnMeter = 0;
-                        EnemyTakeTurn(enemy);
-                    }
-                }
-                foreach (var Enemy in _currentEnemies)
-                {
-                    if (Enemy.isDead == true && Enemy.Rewards == false)
-                    {
-                        experienceForFight += Enemy.WorthXP;
-                        moneyForFight += Enemy.Money;
-                        Enemy.Rewards = true;
-                        enemiesDefeated += 1;
-                    }
-                    if (enemiesDefeated == _currentEnemies.Count)
-                    {
-                        combatInProgress = false;
-                    }
-                }
             }
-            Console.Clear();
-            /*System.Media.SoundPlayer sound2 =
-            new System.Media.SoundPlayer();
-            sound2.SoundLocation = @"\ElevenFiftyProjects\SD 65\Game_Project\Victory.wav";
-            sound2.Load();
-            sound2.Play();*/
-            Money += moneyForFight;
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"${moneyForFight} recieved.");
-            Thread.Sleep(500);
-
-            _currentEnemies.Clear();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            
+        }
+        public static void DisplayHeroes()
+        {
             foreach (var Hero in _heroes)
             {
+                Hero.TurnMeter += Hero.Dexterity;
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.Write($"{Hero.Name}");
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine($" has recieved {experienceForFight} experience.");
-                Thread.Sleep(500);
-                Hero.XP += experienceForFight;
-                if (Hero.XP > 0)
-                {
-                    Console.WriteLine($"{Hero.Name} needs {Hero.xpForLevelUp - Hero.XP} experience for next level");
-                }
-                Thread.Sleep(500);
-                Console.WriteLine("Press any key to continue...");
-
-                Console.ReadKey();
-                Console.Clear();
+                Console.WriteLine($"\n" +
+                    $"Health: {Hero.Health} | Energy: {Hero.Energy} | Turn Meter: {Hero.TurnMeter}");
+                Console.WriteLine();
+                //count++;
             }
 
+        }
+        public static void CheckForHeroesTurn()
+        {
+            if (_heroes[0].TurnMeter >= 75)
+            {
+                _heroes[0].TurnMeter = 0;
+                HeroTakeTurn(_heroes[0]);
+            }
+            if (_heroes[_heroes.Count - 1].TurnMeter >= 75)
+            {
+                _heroes[_heroes.Count - 1].TurnMeter = 0;
+                HeroTakeTurn(_heroes[_heroes.Count - 1]);
+
+            }
+        }
+        public static void CheckForEnemiesTurn()
+        {
+            foreach (var enemy in _currentEnemies)
+            {
+                if (enemy.TurnMeter >= 100)
+                {
+                    enemy.TurnMeter = 0;
+                    EnemyTakeTurn(enemy);
+                }
+            }
         }
         static void HeroTakeTurn(Hero Hero)
         {
@@ -211,17 +139,20 @@ namespace Game_Project
             int count;
             while (AttackInProgress == true)
             {
+                AttackInProgress = false;
                 count = 1;
                 Console.Clear();
-                foreach (var Enemy in _currentEnemies)
+                DisplayEnemies();
+                /*foreach (var Enemy in _currentEnemies)
                 {
-                    Console.WriteLine($"{count}) {Enemy.Name}\nHealth: {Enemy.Health} | Turn Meter: {Enemy.TurnMeter}\n");
+                    Console.Write($"{count})");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write($" {Enemy.Name}");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine($"\nHealth: {Enemy.Health} | Turn Meter: {Enemy.TurnMeter}\n");
                     count++;
-                }
-                AttackInProgress = false;
-                Console.WriteLine();
-                Console.WriteLine();
-                Console.WriteLine();
+                }*/
+            
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.Write($"{Hero.Name}");
                 Console.ForegroundColor = ConsoleColor.White;
@@ -233,29 +164,18 @@ namespace Game_Project
                 Console.WriteLine("What action do you want to perform?");
                 string actionChoice = Console.ReadLine().ToLower();
                 int enemyChoice = 0;
-
-
                 Console.Clear();
-
-
                 switch (actionChoice)
                 {
                     case "1":
                         count = 1;
                         //Show Current Enemies
-                        foreach (var Enemy in _currentEnemies)
-                        {
-                            Console.WriteLine($"{count}) {Enemy.Name}\nHealth: {Enemy.Health} | Turn Meter: {Enemy.TurnMeter}\n");
-                            count++;
-
-                        }
-                        Console.WriteLine();
-                        Console.WriteLine();
-                        Console.WriteLine();
+                        DisplayEnemies();
                         Console.WriteLine("Which enemy would you like to attack?");
-                        Console.WriteLine($"Enter {count} to cancel attack");
+                        Console.WriteLine($"Enter {_currentEnemies.Count +1} to cancel attack");
                         //Select Enemy To Target
-                        try
+                        AttackInProgress = ChooseTargetForBasicAttack(Hero);
+                        /*try
                         {
                             enemyChoice = int.Parse(Console.ReadLine());
                         }
@@ -266,14 +186,14 @@ namespace Game_Project
                                         "Press any key to continue...");
                             Console.ReadKey();
                             Console.Clear();
-                            AttackInProgress = true;*/
+                            AttackInProgress = true;
                         }
                         int correctEnemyChoice = enemyChoice - 1;
                         if (correctEnemyChoice < 0)
                         {
                             correctEnemyChoice = 5;
                         }
-                        if (enemyChoice == count)
+                        if (enemyChoice == _currentEnemies.Count + 1)
                         {
                             AttackInProgress = true;
                             break;
@@ -310,7 +230,7 @@ namespace Game_Project
                             Console.ReadKey();
                             Console.Clear();
                             AttackInProgress = true;
-                        }
+                        }*/
 
                         break;
                     case "2":
@@ -323,7 +243,11 @@ namespace Game_Project
                             //Show Current Enemies
                             foreach (var Enemy in _currentEnemies)
                             {
-                                Console.WriteLine($"{count}) {Enemy.Name}\nHealth: {Enemy.Health} | Turn Meter: {Enemy.TurnMeter}\n");
+                                Console.Write($"{count})");
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.Write($" {Enemy.Name}");
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Console.WriteLine($"\nHealth: {Enemy.Health} | Turn Meter: {Enemy.TurnMeter}\n");
                                 count++;
 
                             }
@@ -366,7 +290,11 @@ namespace Game_Project
                         count = 1;
                         foreach (var Enemy in _currentEnemies)
                         {
-                            Console.WriteLine($"{count}) {Enemy.Name}\nHealth: {Enemy.Health} | Turn Meter: {Enemy.TurnMeter}\n");
+                            Console.Write($"{count})");
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Write($" {Enemy.Name}");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.WriteLine($"\nHealth: {Enemy.Health} | Turn Meter: {Enemy.TurnMeter}\n");
                             count++;
 
                         }
@@ -384,6 +312,7 @@ namespace Game_Project
                         {
 
                         }
+                        int correctEnemyChoice;
                         correctEnemyChoice = enemyChoice - 1;
                         if (correctEnemyChoice < 0)
                         {
@@ -418,6 +347,7 @@ namespace Game_Project
                             {
                                 Nightwing hero = (Nightwing)Hero;
                                 damage = hero.SharkRepelent(_currentEnemies[correctEnemyChoice]);
+                                Thread.Sleep(1000);
                                 _currentEnemies[correctEnemyChoice].TakeDamage(damage);
                                 Console.ForegroundColor = ConsoleColor.White;
 
@@ -426,6 +356,7 @@ namespace Game_Project
                             {
                                 Batwoman hero = (Batwoman)Hero;
                                 damage = hero.SummonRK1(_currentEnemies[correctEnemyChoice]);
+                                Thread.Sleep(1000);
                                 foreach (Enemy enemy in _currentEnemies)
                                 {
                                     if (enemy.isDead == false)
@@ -470,6 +401,72 @@ namespace Game_Project
 
             }
         }
+        public static bool ChooseTargetForBasicAttack(Hero Hero)
+        {
+            Console.Clear();
+            DisplayEnemies();
+            Console.WriteLine("Which enemy would you like to attack?");
+            Console.WriteLine($"Enter {_currentEnemies.Count + 1} to cancel attack");
+            bool AttackInProgress = false;
+            int enemyChoice = 0;
+            try
+            {
+                enemyChoice = int.Parse(Console.ReadLine());
+            }
+            catch (Exception)
+            {
+                /*Console.Clear();
+                Console.WriteLine("Please enter a number.\n" +
+                            "Press any key to continue...");
+                Console.ReadKey();
+                Console.Clear();
+                AttackInProgress = true;*/
+            }
+            int correctEnemyChoice = enemyChoice - 1;
+            if (correctEnemyChoice < 0)
+            {
+                correctEnemyChoice = 5;
+            }
+            if (enemyChoice == _currentEnemies.Count + 1)
+            {
+                return AttackInProgress = true;
+                
+
+            }
+            if (correctEnemyChoice < _currentEnemies.Count)
+            {
+                if (_currentEnemies[correctEnemyChoice].isDead == true)
+                {
+                    Console.WriteLine("They're aleady unconcious.\n" +
+                    "Press any key to continue...");
+                    Console.ReadKey();
+                    Console.Clear();
+                    return AttackInProgress = true;
+                }
+
+            }
+
+            //Attack
+            if (correctEnemyChoice >= 0 && correctEnemyChoice < _currentEnemies.Count)
+            {
+                Console.Clear();
+                double damage = Hero.BasicAttack(_currentEnemies[correctEnemyChoice]);
+                _currentEnemies[correctEnemyChoice].TakeDamage(damage);
+                Console.ForegroundColor = ConsoleColor.White;
+
+                Thread.Sleep(2000);
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Please enter a valid option.\n" +
+                            "Press any key to continue...");
+                Console.ReadKey();
+                Console.Clear();
+                return AttackInProgress = true;
+            }
+            return AttackInProgress = false;
+        }
         static void EnemyTakeTurn(Enemy enemy)
         {
             int heroTarget = randomNum.Next(0, _heroes.Count);
@@ -480,9 +477,20 @@ namespace Game_Project
                 case 1:
                     //enemy.Attack(target);
                     double damage = enemy.BasicAttack();
+                    
                     Console.Clear();
                     Console.WriteLine($"{enemy.Name} hits {_heroes[heroTarget].Name} in the knees! POW!");
+                    Thread.Sleep(1000);
+                    Console.Clear();
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Thread.Sleep(200);
+                    Console.Clear();
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Red;
                     _heroes[heroTarget].TakeDamage(damage);
+                    
                     Thread.Sleep(2000);
                     break;
 
@@ -490,6 +498,87 @@ namespace Game_Project
                     break;
             }
         }
+        static void VictoryScreen(int moneyForFight, double experienceForFight)
+        {
+            Console.Clear();
+            /*System.Media.SoundPlayer sound2 =
+            new System.Media.SoundPlayer();
+            sound2.SoundLocation = @"\ElevenFiftyProjects\SD 65\Game_Project\Victory.wav";
+            sound2.Load();
+            sound2.Play();*/
+            Money += moneyForFight;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"${moneyForFight} recieved.");
+            Thread.Sleep(500);
+
+            _currentEnemies.Clear();
+            foreach (var Hero in _heroes)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write($"{Hero.Name}");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine($" has recieved {experienceForFight} experience.");
+                Thread.Sleep(500);
+                Hero.XP += experienceForFight;
+                if (Hero.XP > 0)
+                {
+                    Console.WriteLine($"{Hero.Name} needs {Hero.xpForLevelUp - Hero.XP} experience for next level");
+                }
+                Thread.Sleep(500);
+                Console.WriteLine("Press any key to continue...");
+
+                Console.ReadKey();
+                Console.Clear();
+            }
+        }
+        public static void CombatScene()
+        {
+            /*System.Media.SoundPlayer sound =
+            new System.Media.SoundPlayer();
+            sound.SoundLocation = @"\ElevenFiftyProjects\SD 65\Game_Project\Battle.wav";
+            sound.Load();
+            sound.Play();*/
+
+            _heroes[0].runAway = false;
+            double experienceForFight = 0;
+            int moneyForFight = 0;
+            int count = 0;
+            bool combatInProgress = true;
+            int enemiesDefeated = 0;
+                while (combatInProgress == true)
+                {
+                    if (_heroes[0].runAway == true)
+                    {
+                        combatInProgress = false;
+                        return;
+                    }
+                Thread.Sleep(1000);
+                count = 1;
+                Console.Clear();
+                DisplayEnemies();
+                DisplayHeroes();
+                CheckForHeroesTurn();
+                CheckForEnemiesTurn();
+                   
+                    foreach (var Enemy in _currentEnemies)
+                    {
+                        if (Enemy.isDead == true && Enemy.Rewards == false)
+                        {
+                            experienceForFight += Enemy.WorthXP;
+                            moneyForFight += Enemy.Money;
+                            Enemy.Rewards = true;
+                            enemiesDefeated += 1;
+                        }
+                        if (enemiesDefeated == _currentEnemies.Count)
+                        {
+                            combatInProgress = false;
+                        }
+                    }
+                }
+            VictoryScreen(moneyForFight, experienceForFight);
+
+        }
+
     }
 
 }

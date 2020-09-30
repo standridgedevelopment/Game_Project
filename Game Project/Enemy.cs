@@ -61,10 +61,16 @@ namespace Game_Project
         {
             Thread.Sleep(500);
             Health -= damage;
+            Console.Clear();
+            Console.BackgroundColor = ConsoleColor.Red;
+            Thread.Sleep(200);
+            Console.Clear();
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.Clear();
             Console.ForegroundColor = ConsoleColor.Red;
 
             Console.WriteLine($"{Name} takes {damage} damage!");
-            Thread.Sleep(500);
+            Thread.Sleep(800);
             if (Health <= 0)
             {
                 isDead = true;
@@ -80,7 +86,7 @@ namespace Game_Project
         public PenguinThug(int level)
         {
             Name = "Penguin Thug";
-            MaxHealth = randomStats.Next(15,20) + (randomStats.Next(0,5)*level); 
+            MaxHealth = randomStats.Next(5,10) + (randomStats.Next(0,5)*level); //20, 30
             Health = MaxHealth;
             TurnMeter = 0;
             Dexterity = randomStats.Next(6,10);
@@ -97,7 +103,7 @@ namespace Game_Project
         public Penguin()
         {
             Name = "Penguin";
-            MaxHealth = 200;
+            MaxHealth = 150;
             Health = MaxHealth;
             TurnMeter = 0;
             Dexterity = 15;
