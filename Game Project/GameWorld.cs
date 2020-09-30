@@ -31,6 +31,7 @@ namespace Game_Project
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine("1: New Game");
                 Console.WriteLine("2: Exit\n");
+                Console.ForegroundColor = ConsoleColor.Yellow;
                 string userInput = Console.ReadLine().ToLower();
                 switch (userInput)
                 {
