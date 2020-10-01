@@ -92,10 +92,15 @@ namespace Game_Project
         public List<Action> SkillsUse = new List<Action>();
         public int SkillNumber;
         public string SuperHeroName;
-        public virtual void AddSkill(string FullNameOfSkill)
+        public void AddSkill(string FullNameOfSkill)
         {
+            SkillList.Add(FullNameOfSkill);
         }
-        
+        public virtual void CheckForNewSkills()
+        {
+
+        }
+
         public virtual void LevelUP()
         {
             
@@ -110,7 +115,7 @@ namespace Game_Project
         {
             Health -= damage;
             Console.WriteLine($"{Name} takes {damage} damage!");
-            Thread.Sleep(800);
+            Thread.Sleep(400);
         }
         public bool runAway;
        
@@ -134,8 +139,9 @@ namespace Game_Project
             int dexterityIncrease = statsIncrease.Next(1, 3);
             Dexterity += dexterityIncrease;
             Console.WriteLine($"+{dexterityIncrease} Dexterity");
-            
-            
+            CheckForNewSkills();
+
+
         }
         public Nightwing()
         {
@@ -152,32 +158,27 @@ namespace Game_Project
             runAway = false;
             new List<string>();
             new List<Action>();
-            AddSkill($"Shark Repelent (Attack All) (20)");
-            AddSkill($"Batarang (Attack Single) (20)");
+            
+            
         }
-        public double SharkRepelent() 
+        public virtual void CheckForNewSkills()
         {
-            Energy -= 20;
-            Console.WriteLine($"That's not a shark!!! You spray Shark Repelent wildly. It goes in everyones' eyes! ARGHHHHHHH!!!!!");
-            Thread.Sleep(1500);
-            return Intelligence;
+            switch (Level)
+            {
+                case 2:
+                    Console.WriteLine($"\nCongratulations! {Name} has learned to use Shark Repellent!");
+                    Console.WriteLine("The Sharks won't stand a chance!");
+                    AddSkill($"Shark Repellent (Attack All) (20)");
+                    break;
+                case 3:
+                    Console.WriteLine($"\nCongratulations! {Name} has learned to use a Batarang!");
+                    Console.WriteLine("It always comes back!");
+                    AddSkill($"Batarang (Attack Single) (20)");
+                    break;
+                default:
+                    break;
+            }
         }
-        public double Batarang(Enemy enemy)
-        {
-            Energy -= 20;
-            Console.WriteLine($"Nightwing thows a Batarang at {enemy.Name}'s face! TWAK!!");
-            Thread.Sleep(1500);
-            return Strength + 5;
-        }
-        public override void AddSkill(string FullNameOfSkill)
-        {
-            SkillList.Add(FullNameOfSkill);
-            int skillNumber = (SkillList.IndexOf(FullNameOfSkill) + 1);
-        }
-      
-
-       
-
     }
     public class Batwoman : Hero
     {

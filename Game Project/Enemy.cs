@@ -9,7 +9,7 @@ namespace Game_Project
 {
 
      public abstract class Enemy
-    {
+        {
         public Random randomStats = new Random();
         public string Name;
         public double MaxHealth;
@@ -70,7 +70,7 @@ namespace Game_Project
             Console.ForegroundColor = ConsoleColor.Red;
 
             Console.WriteLine($"{Name} takes {damage} damage!");
-            Thread.Sleep(800);
+            Thread.Sleep(400);
             if (Health <= 0)
             {
                 isDead = true;
@@ -85,17 +85,18 @@ namespace Game_Project
 
         public PenguinThug(int level)
         {
+            Level = level;
             Name = "Penguin Thug";
-            MaxHealth = randomStats.Next(5,10) + (randomStats.Next(0,5)*level); //20, 30
+            MaxHealth = randomStats.Next(0,5) + (randomStats.Next(1,5)*level); //20, 30
             Health = MaxHealth;
             TurnMeter = 0;
             Dexterity = randomStats.Next(6,10);
             Strength = randomStats.Next(6,10);
-            Money = randomStats.Next(50, 100);
-            WorthXP = randomStats.Next(20, 30);
+            Money = 50 + (10 * level);
+            WorthXP = 30 + (5*level);
             isDead = false;
             Rewards = false;
-            Level = level;
+            
         }
     }
     public class Penguin : Enemy
@@ -103,11 +104,13 @@ namespace Game_Project
         public Penguin()
         {
             Name = "Penguin";
-            MaxHealth = 150;
+            MaxHealth = 100;
             Health = MaxHealth;
             TurnMeter = 0;
             Dexterity = 15;
             Strength = 20;
+            isDead = false;
+            Rewards = false;
         }
     }
 }

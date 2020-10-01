@@ -10,19 +10,33 @@ namespace Game_Project
 {
     public static class GameLogic
     {
-        static Random randomNum = new Random();
+        public static Random randomNum = new Random();
         static List<Enemy> _areaEnemies = new List<Enemy>();
-        static List<Enemy> _currentEnemies = new List<Enemy>();
-        static List<Hero> _heroes = new List<Hero>();
+        public static List<Enemy> _currentEnemies = new List<Enemy>();
+        public static List<Hero> _heroes = new List<Hero>();
         static double experienceForFight;
         static int moneyForFight;
         static int enemiesDefeated;
-        static int Money;
+        public static int Money;
 
 
         public static void AddAreaEnemy(Enemy enemyType)
         {
-            _areaEnemies.Add(enemyType);
+            if (enemyType.GetType() == typeof(PenguinThug))
+            {
+                var PenguinT1 = new PenguinThug(randomNum.Next(1, 4));
+                Thread.Sleep(100);
+                var PenguinT2 = new PenguinThug(randomNum.Next(1, 4));
+                Thread.Sleep(100);
+                var PenguinT3 = new PenguinThug(randomNum.Next(1, 4));
+                Thread.Sleep(100);
+                var PenguinT4 = new PenguinThug(randomNum.Next(1, 4));
+                Thread.Sleep(100);
+                _areaEnemies.Add(PenguinT1);
+                _areaEnemies.Add(PenguinT2);
+                _areaEnemies.Add(PenguinT3);
+                _areaEnemies.Add(PenguinT4);
+            }
         }
         public static void EmptyAreaEnemyList()
         {
@@ -34,6 +48,7 @@ namespace Game_Project
         public static void AddCurrentEnemy(Enemy enemy)
         {
             _currentEnemies.Add(enemy);
+            _areaEnemies.Remove(enemy);
         }
         public static void AddHero(Hero hero)
         {
@@ -41,26 +56,21 @@ namespace Game_Project
         }
         public static void NewEnemyEncounter()
         {
-            PenguinThug enemy1 = new PenguinThug(randomNum.Next(1, 4));
-            Thread.Sleep(200);
-            PenguinThug enemy2 = new PenguinThug(randomNum.Next(1, 4));
-            Thread.Sleep(200);
-            PenguinThug enemy3 = new PenguinThug(randomNum.Next(1, 4));
-            int amountOfEnemies = randomNum.Next(2, 4);
-            switch (amountOfEnemies)
+            int amountOfEnemies = randomNum.Next(1, 10);
+            if (amountOfEnemies <= 2)
             {
-                case 1:
-                    _currentEnemies.Add(enemy1);
-                    break;
-                case 2:
-                    _currentEnemies.Add(enemy1);
-                    _currentEnemies.Add(enemy2);
-                    break;
-                case 3:
-                    _currentEnemies.Add(enemy1);
-                    _currentEnemies.Add(enemy2);
-                    _currentEnemies.Add(enemy3);
-                    break;
+                AddCurrentEnemy(_areaEnemies[randomNum.Next(0, _areaEnemies.Count)]);
+            }
+            else if (amountOfEnemies <= 7)
+            {
+                AddCurrentEnemy(_areaEnemies[randomNum.Next(0, _areaEnemies.Count)]);
+                AddCurrentEnemy(_areaEnemies[randomNum.Next(0, _areaEnemies.Count)]);
+            }
+            else
+            {
+                AddCurrentEnemy(_areaEnemies[randomNum.Next(0, _areaEnemies.Count)]);
+                AddCurrentEnemy(_areaEnemies[randomNum.Next(0, _areaEnemies.Count)]);
+                AddCurrentEnemy(_areaEnemies[randomNum.Next(0, _areaEnemies.Count)]);
             }
         }
         public static void PenguinEncounter()
@@ -71,10 +81,10 @@ namespace Game_Project
             _currentEnemies.Add(thug1);
             var thug2 = new PenguinThug(5);
             _currentEnemies.Add(thug2);
-
         }
         public static void CombatScene()
         {
+            NewEnemyEncounter();
             /*System.Media.SoundPlayer sound =
             new System.Media.SoundPlayer();
             sound.SoundLocation = @"\ElevenFiftyProjects\SD 65\Game_Project\Battle.wav";
@@ -106,6 +116,40 @@ namespace Game_Project
             VictoryScreen(moneyForFight, experienceForFight);
 
         }
+        public static void PenguinBossScene()
+        {
+            PenguinEncounter();
+            /*System.Media.SoundPlayer sound =
+            new System.Media.SoundPlayer();
+            sound.SoundLocation = @"\ElevenFiftyProjects\SD 65\Game_Project\Battle.wav";
+            sound.Load();
+            sound.Play();*/
+
+            _heroes[0].runAway = false;
+            experienceForFight = 0;
+            moneyForFight = 0;
+            enemiesDefeated = 0;
+            bool combatInProgress = true;
+            while (combatInProgress == true)
+            {
+                if (_heroes[0].runAway == true)
+                {
+                    combatInProgress = false;
+                    return;
+                }
+                IncreaseTurnMeter();
+                Thread.Sleep(1000);
+                Console.Clear();
+                DisplayEnemies();
+                DisplayHeroes();
+                combatInProgress =  CheckForHeroesTurn();
+                CheckForEnemiesTurn();
+                //combatInProgress = CheckForEndOfBattle();
+
+            }
+            VictoryScreen(moneyForFight, experienceForFight);
+
+        }
         public static void IncreaseTurnMeter()
         {
             foreach (Hero Hero in _heroes)
@@ -129,7 +173,7 @@ namespace Game_Project
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write($" {Enemy.Name}");
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine($"\nHealth: {Enemy.Health} | Turn Meter: {Enemy.TurnMeter}\n");
+                Console.WriteLine($"\nHealth: {Enemy.Health} | Level: {Enemy.Level} | Turn Meter: {Enemy.TurnMeter}\n");
 
                 count++;
 
@@ -137,7 +181,7 @@ namespace Game_Project
             Console.WriteLine();
             Console.WriteLine();
             Console.WriteLine();
-            
+
         }
         public static void DisplayHeroes()
         {
@@ -165,19 +209,24 @@ namespace Game_Project
             Console.WriteLine("3. Run\n");
             Console.WriteLine("What action do you want to perform?");
         }
-        public static void CheckForHeroesTurn()
+        public static bool CheckForHeroesTurn()
         {
-            if (_heroes[0].TurnMeter >= 75)
+            bool combatInProgress = true;
+            foreach (Hero Hero in _heroes)
             {
-                _heroes[0].TurnMeter = 0;
-                HeroTakeTurn(_heroes[0]);
+                if (Hero.TurnMeter >= 5)
+                {
+                    Hero.TurnMeter = 0;
+                    HeroTakeTurn(Hero);
+                }
+                combatInProgress = CheckForEndOfBattle();
+                if (combatInProgress == false)
+                {
+                    return combatInProgress;
+                }
             }
-            if (_heroes[_heroes.Count - 1].TurnMeter >= 75)
-            {
-                _heroes[_heroes.Count - 1].TurnMeter = 0;
-                HeroTakeTurn(_heroes[_heroes.Count - 1]);
-
-            }
+            return combatInProgress;
+           
         }
         public static void CheckForEnemiesTurn()
         {
@@ -210,11 +259,12 @@ namespace Game_Project
                         count = 1;
                         //Show Current Enemies
                         DisplayEnemies();
-                       
+
                         //Select Enemy To Target
                         AttackInProgress = ChooseTargetForBasicAttack(Hero);
                         break;
                     case "2":
+                       
                         string useSkill = "";
                         bool chooseSkill = false;
                         while (chooseSkill == false)
@@ -222,9 +272,9 @@ namespace Game_Project
                             useSkill = HeroChooseSkill(Hero);
                             chooseSkill = true;
                             if (useSkill == "")
-                                {
-                                chooseSkill = false;
-                                }
+                            {
+                                AttackInProgress = true;
+                            }
                         }
                         string typeOfSkill = WhatTypeOfSkill(useSkill);
                         switch (typeOfSkill)
@@ -233,10 +283,10 @@ namespace Game_Project
                                 AttackInProgress = ChooseTargetForAttackSkill(Hero, useSkill);
                                 break;
                             case "Attack All":
-                                SkillAttackAll(Hero, useSkill);
+                                HeroSkillBook.HeroUseAttackAllSkill(Hero, useSkill);
                                 break;
                         }
-                        
+
                         break;
                     case "3":
                         Console.WriteLine("You away like a coward");
@@ -259,54 +309,60 @@ namespace Game_Project
         public static string HeroChooseSkill(Hero Hero)
         {
             string useSkill = "";
-                //Show Current Enemies
-                DisplayEnemies();
-                Console.WriteLine("Which skill would you like to use?");
-                int skillCount = 1;
-                foreach (var skill in Hero.SkillList)
-                {
-                    Console.WriteLine($"{skillCount}) {skill}");
-                    skillCount++;
-                }
-                int skillChoice = 0;
-                try
-                {
-                    skillChoice = int.Parse(Console.ReadLine());
-                }
-                catch (Exception)
-                {
+            if (Hero.SkillList.Count == 0)
+            {
+                Console.WriteLine("No skills available. Try leveling up first");
+                Console.ReadKey();
+                return useSkill;
+            }
+            //Show Current Enemies
+            DisplayEnemies();
+            Console.WriteLine("Which skill would you like to use?");
+            int skillCount = 1;
+            foreach (var skill in Hero.SkillList)
+            {
+                Console.WriteLine($"{skillCount}) {skill}");
+                skillCount++;
+            }
+            int skillChoice = 0;
+            try
+            {
+                skillChoice = int.Parse(Console.ReadLine());
+            }
+            catch (Exception)
+            {
 
-                }
-                int correctSkillChoice = skillChoice - 1;
+            }
+            int correctSkillChoice = skillChoice - 1;
 
-                if (correctSkillChoice < Hero.SkillList.Count && correctSkillChoice >= 0)
-                {
-                    useSkill = Hero.SkillList[correctSkillChoice];
-                    return useSkill;
-                }
-                else
-                {
-                    Console.Clear();
-                    Console.WriteLine("Select a valid skill.\n" +
-                              "Press any key to continue...");
-                    Console.ReadKey();
-                    Console.Clear();
-                    return useSkill;
-                }
+            if (correctSkillChoice < Hero.SkillList.Count && correctSkillChoice >= 0)
+            {
+                useSkill = Hero.SkillList[correctSkillChoice];
+                return useSkill;
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Select a valid skill.\n" +
+                          "Press any key to continue...");
+                Console.ReadKey();
+                Console.Clear();
+                return useSkill;
+            }
         }
         public static string WhatTypeOfSkill(string useSkill)
         {
             string result = "";
             if (useSkill.Contains("Attack All"))
             {
-                result = "Attack All";   
+                result = "Attack All";
             }
             if (useSkill.Contains("Attack Single"))
             {
                 result = "Attack Single";
             }
             return result;
-            
+
         }
         public static bool ChooseTargetForBasicAttack(Hero Hero)
         {
@@ -331,7 +387,7 @@ namespace Game_Project
             if (enemyChoice == _currentEnemies.Count + 1)
             {
                 return AttackInProgress = true;
-                
+
 
             }
             if (correctEnemyChoice < _currentEnemies.Count)
@@ -413,18 +469,9 @@ namespace Game_Project
             //Attack
             if (correctEnemyChoice >= 0 && correctEnemyChoice < _currentEnemies.Count)
             {
-                double damage = 0;
                 Console.Clear();
-                //Enemy target = _currentEnemies[correctEnemyChoice];
-                if (useSkill.Contains("Batarang"))
-                {
-                    Nightwing hero = (Nightwing)Hero;
-                    damage = hero.Batarang(_currentEnemies[correctEnemyChoice]);
-                    Thread.Sleep(1000);
-                    _currentEnemies[correctEnemyChoice].TakeDamage(damage);
-                    Console.ForegroundColor = ConsoleColor.White;
-
-                }
+                double damage = HeroSkillBook.HeroUseAttackSingleSkill(_currentEnemies[correctEnemyChoice], Hero, useSkill);
+                _currentEnemies[correctEnemyChoice].TakeDamage(damage);
                 Thread.Sleep(2000);
             }
             else
@@ -438,31 +485,6 @@ namespace Game_Project
             }
             return AttackInProgress = false;
         }
-        public static void SkillAttackAll(Hero Hero, string useSkill)
-        {
-            double damage = 0;
-            if (useSkill.Contains("Shark Repelent"))
-            {
-                Console.Clear();
-                Nightwing hero = (Nightwing)Hero;
-                damage = hero.SharkRepelent();
-            }
-            if (useSkill.Contains("Red Knight"))
-            {
-                Console.Clear();
-                Batwoman hero = (Batwoman)Hero;
-                damage = hero.SummonRK1();
-            }
-            foreach (Enemy enemy in _currentEnemies)
-            {
-                if (enemy.isDead == false)
-                {
-                enemy.TakeDamage(damage);
-                Console.ForegroundColor = ConsoleColor.White;
-                Thread.Sleep(2000);
-                }
-            }
-        }
         static void EnemyTakeTurn(Enemy enemy)
         {
             int heroTarget = randomNum.Next(0, _heroes.Count);
@@ -473,7 +495,7 @@ namespace Game_Project
                 case 1:
                     //enemy.Attack(target);
                     double damage = enemy.BasicAttack();
-                    
+
                     Console.Clear();
                     Console.WriteLine($"{enemy.Name} hits {_heroes[heroTarget].Name} in the knees! POW!");
                     Thread.Sleep(1000);
@@ -486,7 +508,7 @@ namespace Game_Project
                     Console.Clear();
                     Console.ForegroundColor = ConsoleColor.Red;
                     _heroes[heroTarget].TakeDamage(damage);
-                    
+
                     Thread.Sleep(2000);
                     break;
 
@@ -509,7 +531,7 @@ namespace Game_Project
                 if (enemiesDefeated == _currentEnemies.Count)
                 {
                     combatInProgress = false;
-                }   
+                }
             }
             return combatInProgress;
         }
@@ -527,6 +549,7 @@ namespace Game_Project
             Thread.Sleep(500);
 
             _currentEnemies.Clear();
+            _areaEnemies.Clear();
             foreach (var Hero in _heroes)
             {
                 Console.ForegroundColor = ConsoleColor.Blue;
@@ -540,13 +563,13 @@ namespace Game_Project
                     Console.WriteLine($"{Hero.Name} needs {Hero.xpForLevelUp - Hero.XP} experience for next level");
                 }
                 Thread.Sleep(500);
-                Console.WriteLine("Press any key to continue...");
+                Console.WriteLine("\nPress any key to continue...");
 
                 Console.ReadKey();
                 Console.Clear();
             }
         }
-       
+
 
     }
 

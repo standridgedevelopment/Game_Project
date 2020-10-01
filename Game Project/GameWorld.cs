@@ -65,11 +65,11 @@ namespace Game_Project
             Console.Write("Batman");
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine(" has been captured. You need to find him.");
-            Thread.Sleep(5000);
+            Thread.Sleep(2000);
             Console.Write("You are Batman's apprentice, Dick Grayson. Now known as");
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine(" Nightwing!");
-            Thread.Sleep(5000);
+            Thread.Sleep(2000);
             var mainPlayer = new Nightwing();
             GameLogic.AddHero(mainPlayer);
             while (inGotham == true)
@@ -144,25 +144,22 @@ namespace Game_Project
         private void PatrolStreets()
         {
             bool inStreets = true;
-            var enemy1 = new PenguinThug(1);
-            var enemy2 = new PenguinThug(2);
-            var enemy3 = new PenguinThug(3);
-            GameLogic.AddAreaEnemy(enemy1);
-            GameLogic.AddAreaEnemy(enemy2);
-            GameLogic.AddAreaEnemy(enemy3);
             int searchProgress = 0;
             while (inStreets == true)
                 {
+                var enemy1 = new PenguinThug(1);
+                GameLogic.AddAreaEnemy(enemy1);
                 /*System.Media.SoundPlayer sound =
                 new System.Media.SoundPlayer();
                 sound.SoundLocation = @"\ElevenFiftyProjects\SD 65\Game_Project\Field.wav";
                 sound.Load();
                 sound.Play();*/
-                 
+
                 Console.Clear();
                 Console.WriteLine("What do you want to do?:\n" +
                                 "1) Search for clues about Batman \n" +
-                                "2) Return to base");
+                                "2) Find some gang members to fight\n" +
+                                "3) Return to base");
                 int selection = 0;
                 try
                 {
@@ -189,7 +186,6 @@ namespace Game_Project
                                     "\nWhy are penguins men on this side of town, you think to yourself as you jump into action!");
                                 Console.WriteLine("\nPress any key to continue...");
                                 Console.ReadKey();
-                                GameLogic.NewEnemyEncounter();
                                 GameLogic.CombatScene();
                                 break;
                             case 2:
@@ -221,7 +217,6 @@ namespace Game_Project
                                     "\nThey attack!");
                                 Console.WriteLine("\nPress any key to continue...");
                                 Console.ReadKey();
-                                GameLogic.NewEnemyEncounter();
                                 GameLogic.CombatScene();
                                 break;
                             case 3:
@@ -256,21 +251,22 @@ namespace Game_Project
                                 Console.Clear();
                                 Batwoman batwoman = new Batwoman();
                                 GameLogic.AddHero(batwoman);
-                                GameLogic.PenguinEncounter();
-                                GameLogic.CombatScene();
+                                GameLogic.PenguinBossScene();
                                 Console.WriteLine("You pry the freezer door open and Batman falls out. " +
                                     "\nHe doesn't even say thank you.. Because, well, he's Batman.");
                                 Console.WriteLine("\nPress any key to continue...");
-                                Console.WriteLine("YOU SAVED BATMAN!");
+                                Console.WriteLine("YOU SAVED BATMAN!\n" +
+                                "Press any key to continue...");
+
                                 Console.ReadKey();
                                 return;
-                                
-
-                                
                         }
-                       
                         break;
                     case 2:
+                        GameLogic.CombatScene();
+                        break;
+                    case 3:
+                        inStreets = false;
                         return;
                        
                     default:
