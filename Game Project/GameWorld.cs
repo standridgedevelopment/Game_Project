@@ -143,6 +143,8 @@ namespace Game_Project
         //Patrol the streets
         private void PatrolStreets()
         {
+            Batwoman batwoman = new Batwoman();
+            GameLogic.AddHero(batwoman);
             bool inStreets = true;
             int searchProgress = 0;
             while (inStreets == true)
@@ -249,18 +251,16 @@ namespace Game_Project
                                 Console.WriteLine("\nPress any key to continue...");
                                 Console.ReadKey();
                                 Console.Clear();
-                                Batwoman batwoman = new Batwoman();
-                                GameLogic.AddHero(batwoman);
                                 GameLogic.PenguinBossScene();
                                 Console.WriteLine("You pry the freezer door open and Batman falls out. " +
                                     "\nHe doesn't even say thank you.. Because, well, he's Batman.");
-                                Console.WriteLine("\nPress any key to continue...");
                                 Console.WriteLine("YOU SAVED BATMAN!\n" +
                                 "Press any key to continue...");
 
                                 Console.ReadKey();
                                 return;
                         }
+
                         break;
                     case 2:
                         GameLogic.CombatScene();

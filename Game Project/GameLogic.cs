@@ -11,6 +11,7 @@ namespace Game_Project
     public static class GameLogic
     {
         public static Random randomNum = new Random();
+        //static List<Items> Inventory = new List<Items>();
         static List<Enemy> _areaEnemies = new List<Enemy>();
         public static List<Enemy> _currentEnemies = new List<Enemy>();
         public static List<Hero> _heroes = new List<Hero>();
@@ -36,13 +37,6 @@ namespace Game_Project
                 _areaEnemies.Add(PenguinT2);
                 _areaEnemies.Add(PenguinT3);
                 _areaEnemies.Add(PenguinT4);
-            }
-        }
-        public static void EmptyAreaEnemyList()
-        {
-            foreach (var enemy in _areaEnemies)
-            {
-                _areaEnemies.Remove(enemy);
             }
         }
         public static void AddCurrentEnemy(Enemy enemy)
@@ -90,28 +84,19 @@ namespace Game_Project
             sound.SoundLocation = @"\ElevenFiftyProjects\SD 65\Game_Project\Battle.wav";
             sound.Load();
             sound.Play();*/
-
-            _heroes[0].runAway = false;
             experienceForFight = 0;
             moneyForFight = 0;
             enemiesDefeated = 0;
             bool combatInProgress = true;
             while (combatInProgress == true)
             {
-                if (_heroes[0].runAway == true)
-                {
-                    combatInProgress = false;
-                    return;
-                }
                 IncreaseTurnMeter();
                 Thread.Sleep(1000);
                 Console.Clear();
                 DisplayEnemies();
                 DisplayHeroes();
-                CheckForHeroesTurn();
+                combatInProgress = CheckForHeroesTurn();
                 CheckForEnemiesTurn();
-                combatInProgress = CheckForEndOfBattle();
-
             }
             VictoryScreen(moneyForFight, experienceForFight);
 
@@ -161,6 +146,38 @@ namespace Game_Project
                 if (Enemy.isDead == false)
                 {
                     Enemy.TurnMeter += Enemy.Dexterity;
+                }
+            }
+        }
+        public static void CheckForStatusEffectsHeroes()
+        {
+            foreach (Hero Hero in _heroes)
+            {
+                if (Hero.Poisoned == true)
+                {
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"{Hero.Name} takes poison damage. OUCH!");
+                    Thread.Sleep(500);
+                    Hero.TakeDamage(Hero.PoisonDamage);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Hero.PoisonCounter -= 1;
+                }
+            }
+        }
+        public static void CheckForStatusEffectsEnemy()
+        {
+            foreach (Enemy enemy in _currentEnemies)
+            {
+                if (enemy.Poisoned == true)
+                {
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"{enemy.Name} takes poison damage. OUCH!");
+                    Thread.Sleep(500);
+                    enemy.TakeDamage(enemy.PoisonDamge);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    enemy.PoisonCounter -= 1;
                 }
             }
         }
@@ -214,12 +231,17 @@ namespace Game_Project
             bool combatInProgress = true;
             foreach (Hero Hero in _heroes)
             {
-                if (Hero.TurnMeter >= 5)
+                if (Hero.TurnMeter >= 50)
                 {
                     Hero.TurnMeter = 0;
                     HeroTakeTurn(Hero);
+                    CheckForStatusEffectsHeroes();
                 }
                 combatInProgress = CheckForEndOfBattle();
+                if (Hero.runAway == true)
+                {
+                    combatInProgress = false;
+                }
                 if (combatInProgress == false)
                 {
                     return combatInProgress;
@@ -236,6 +258,7 @@ namespace Game_Project
                 {
                     enemy.TurnMeter = 0;
                     EnemyTakeTurn(enemy);
+                    CheckForStatusEffectsEnemy();
                 }
             }
         }
@@ -470,8 +493,8 @@ namespace Game_Project
             if (correctEnemyChoice >= 0 && correctEnemyChoice < _currentEnemies.Count)
             {
                 Console.Clear();
-                double damage = HeroSkillBook.HeroUseAttackSingleSkill(_currentEnemies[correctEnemyChoice], Hero, useSkill);
-                _currentEnemies[correctEnemyChoice].TakeDamage(damage);
+                HeroSkillBook.HeroUseAttackSingleSkill(_currentEnemies[correctEnemyChoice], Hero, useSkill);
+                //_currentEnemies[correctEnemyChoice].TakeDamage(damage);
                 Thread.Sleep(2000);
             }
             else
@@ -552,6 +575,8 @@ namespace Game_Project
             _areaEnemies.Clear();
             foreach (var Hero in _heroes)
             {
+                Hero.runAway = false;
+                Hero.Poisoned = false;
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.Write($"{Hero.Name}");
                 Console.ForegroundColor = ConsoleColor.White;

@@ -52,6 +52,9 @@ namespace Game_Project
         public int WorthXP;
         public bool isDead;
         public bool Rewards;
+        public bool Poisoned;
+        public int PoisonCounter;
+        public double PoisonDamge;
       
         public double BasicAttack()
         {

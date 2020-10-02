@@ -89,7 +89,6 @@ namespace Game_Project
         }
         public double xpForLevelUp;
         public List<string> SkillList = new List<string>();
-        public List<Action> SkillsUse = new List<Action>();
         public int SkillNumber;
         public string SuperHeroName;
         public void AddSkill(string FullNameOfSkill)
@@ -118,6 +117,9 @@ namespace Game_Project
             Thread.Sleep(400);
         }
         public bool runAway;
+        public bool Poisoned;
+        public int PoisonCounter;
+        public double PoisonDamage;
        
     }
     public class Nightwing : Hero
@@ -156,12 +158,9 @@ namespace Game_Project
             TurnMeter = 0;
             Name = "Nightwing";
             runAway = false;
-            new List<string>();
-            new List<Action>();
-            
-            
+            new List<string>();   
         }
-        public virtual void CheckForNewSkills()
+        public override void CheckForNewSkills()
         {
             switch (Level)
             {
@@ -199,17 +198,24 @@ namespace Game_Project
             int dexterityIncrease = statsIncrease.Next(0, 3);
             Dexterity += dexterityIncrease;
             Console.WriteLine($"+{dexterityIncrease} Dexterity");
-
+            CheckForNewSkills();
         }
-        public double SummonRK1()
+        public override void CheckForNewSkills()
         {
-            Energy -= 35;
-            Console.WriteLine($"You hear the roar of an engine! Your trusty motorcycle attacks everyone.");
-            return Intelligence;
+            switch (Level)
+            {
+                case 5:
+                    Console.WriteLine($"\nCongratulations! {Name} has learned to use Poison Dart!");
+                    Console.WriteLine("Wrist-Mounted action!");
+                    AddSkill($"Poison Dart (Attack Single) (20)");
+                    break;
+                default:
+                    break;
+            }
         }
         public Batwoman()
         {
-            Level = 3;
+            Level = 4;
             xpForLevelUp = 70 + (Level * 30);
             Vitality = 16;
             Health = MaxHealth;
