@@ -11,7 +11,7 @@ namespace Game_Project
     public static class GameLogic
     {
         public static Random randomNum = new Random();
-        //static List<Items> Inventory = new List<Items>();
+        public static List<IItem> Inventory = new List<IItem>();
         static List<Enemy> _areaEnemies = new List<Enemy>();
         public static List<Enemy> _currentEnemies = new List<Enemy>();
         public static List<Hero> _heroes = new List<Hero>();
@@ -214,6 +214,22 @@ namespace Game_Project
             }
 
         }
+        public static void DisplayHeroesForTarget()
+        {
+            int count = 1;
+            foreach (var Hero in _heroes)
+            {
+                Console.Write($"{count}) ");
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write($"{Hero.Name}");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine($"\n" +
+                    $"Health: {Hero.Health} | Energy: {Hero.Energy} | Turn Meter: {Hero.TurnMeter}");
+                Console.WriteLine();
+                count++;
+            }
+
+        }
         public static void DisplayActiveTurnHero(Hero Hero)
         {
             Console.ForegroundColor = ConsoleColor.Blue;
@@ -223,7 +239,8 @@ namespace Game_Project
                     $"Health: {Hero.Health} | Energy: {Hero.Energy} | Turn Meter: {Hero.TurnMeter}");
             Console.WriteLine("1. Attack");
             Console.WriteLine("2. Batskill");
-            Console.WriteLine("3. Run\n");
+            Console.WriteLine("3. Item");
+            Console.WriteLine("4. Run\n");
             Console.WriteLine("What action do you want to perform?");
         }
         public static bool CheckForHeroesTurn()
@@ -289,16 +306,14 @@ namespace Game_Project
                     case "2":
                        
                         string useSkill = "";
-                        bool chooseSkill = false;
-                        while (chooseSkill == false)
-                        {
+                        
                             useSkill = HeroChooseSkill(Hero);
-                            chooseSkill = true;
+                            
                             if (useSkill == "")
                             {
                                 AttackInProgress = true;
                             }
-                        }
+                        
                         string typeOfSkill = WhatTypeOfSkill(useSkill);
                         switch (typeOfSkill)
                         {
@@ -309,9 +324,18 @@ namespace Game_Project
                                 HeroSkillBook.HeroUseAttackAllSkill(Hero, useSkill);
                                 break;
                         }
-
                         break;
                     case "3":
+                        int useItem = -1;
+                            useItem = HeroChooseItem(Hero);
+                            if (useItem == -1)
+                            {
+                                AttackInProgress = true;
+                                break;
+                            }
+                        AttackInProgress = ChooseTargetForItem(Hero, useItem);
+                        break;
+                    case "4":
                         Console.WriteLine("You away like a coward");
                         Console.WriteLine("Press any key to continue...");
                         Console.ReadLine();
@@ -371,6 +395,54 @@ namespace Game_Project
                 Console.ReadKey();
                 Console.Clear();
                 return useSkill;
+            }
+        }
+        public static int HeroChooseItem(Hero Hero)
+        {
+            int useItem = -1;
+            if (InventorySystem.InventoryRecords.Count == 0)
+            {
+                Console.WriteLine("No items available! Go buy some you cheapskate.");
+                Console.ReadKey();
+                return useItem;
+            }
+            //Show Heroes
+            DisplayHeroesForTarget();
+            Console.WriteLine("Which item would you like to use?");
+            int itemCount = 1;
+            foreach (var item in InventorySystem.InventoryRecords)
+            {
+                Console.WriteLine($"{itemCount}) {item.InventoryItem.CombatName}");
+                itemCount++;
+            }
+
+            int itemChoice = 0;
+            try
+            {
+                itemChoice = int.Parse(Console.ReadLine());
+            }
+            catch (Exception)
+            {
+
+            }
+            //if (itemChoice == 1) itemChoice = indexOfFirstAidKit;
+
+            int correctItemChoice = itemChoice - 1;
+
+            if (correctItemChoice < InventorySystem.InventoryRecords.Count && correctItemChoice >= 0)
+            {
+                useItem = correctItemChoice;
+                    //InventorySystem.InventoryRecords[correctItemChoice].InventoryItem.CombatName;
+                return useItem;
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Select a valid item.\n" +
+                          "Press any key to continue...");
+                Console.ReadKey();
+                Console.Clear();
+                return useItem;
             }
         }
         public static string WhatTypeOfSkill(string useSkill)
@@ -494,7 +566,66 @@ namespace Game_Project
             {
                 Console.Clear();
                 HeroSkillBook.HeroUseAttackSingleSkill(_currentEnemies[correctEnemyChoice], Hero, useSkill);
-                //_currentEnemies[correctEnemyChoice].TakeDamage(damage);
+                Thread.Sleep(2000);
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Please enter a valid option.\n" +
+                            "Press any key to continue...");
+                Console.ReadKey();
+                Console.Clear();
+                return AttackInProgress = true;
+            }
+            return AttackInProgress = false;
+        }
+        public static bool ChooseTargetForItem(Hero Hero, int useItem)
+        {
+            bool AttackInProgress;
+            Console.Clear();
+            int count = 1;
+            DisplayHeroesForTarget();
+            Console.WriteLine("\nWhich Hero would you like to target?");
+            Console.WriteLine($"Enter {_heroes.Count + 1} to cancel attack");
+            //Select Enemy To Target
+            int heroChoice = 0;
+            try
+            {
+                heroChoice = int.Parse(Console.ReadLine());
+            }
+            catch (Exception)
+            {
+
+            }
+            int correctHeroChoice;
+            correctHeroChoice = heroChoice - 1;
+            if (correctHeroChoice < 0)
+            {
+                correctHeroChoice = 5;
+            }
+
+            if (heroChoice ==_heroes.Count + 1)
+            {
+                return AttackInProgress = true;
+            }
+            if (correctHeroChoice < _heroes.Count)
+            {
+                if (_currentEnemies[correctHeroChoice].isDead == true)
+                {
+                    Console.WriteLine("They're unconcious.\n" +
+                           "Press any key to continue...");
+                    Console.ReadKey();
+                    Console.Clear();
+                    return AttackInProgress = true;
+                }
+
+            }
+
+            //Use Item
+            if (correctHeroChoice >= 0 && correctHeroChoice < _heroes.Count)
+            {
+                Console.Clear();
+                InventorySystem.InventoryRecords[useItem].InventoryItem.UseItem(_heroes[correctHeroChoice], InventorySystem.InventoryRecords[useItem].InventoryItem);
                 Thread.Sleep(2000);
             }
             else

@@ -8,17 +8,7 @@ using System.Threading.Tasks;
 
 namespace Game_Project
 {
-    public class KeyValuePair<TKey, TValue>
-    {
-        public TKey key;
-        public TValue value;
 
-        public KeyValuePair (TKey _key, TValue _value)
-        {
-            key = _key;
-            value = _value;
-        }
-    }
     static public class HeroSkillBook
     {
         public static void HeroUseAttackSingleSkill(Enemy enemy, Hero Hero, string skill)

@@ -59,6 +59,13 @@ namespace Game_Project
         }
         public void StartGame()
         {
+            FirstAidKit firstAidKit1 = new FirstAidKit();
+            InventorySystem.AddItem(firstAidKit1);
+            /*FirstAidKit firstAidKit2 = new FirstAidKit();
+            FirstAidKit firstAidKit3 = new FirstAidKit();
+\           InventorySystem.AddItem(firstAidKit2);
+            InventorySystem.AddItem(firstAidKit3);*/
+
             bool inGotham = true;
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -72,6 +79,8 @@ namespace Game_Project
             Thread.Sleep(2000);
             var mainPlayer = new Nightwing();
             GameLogic.AddHero(mainPlayer);
+            Batwoman batwoman = new Batwoman();
+            GameLogic.AddHero(batwoman);
             while (inGotham == true)
             {
                 /*System.Media.SoundPlayer sound =
@@ -143,8 +152,6 @@ namespace Game_Project
         //Patrol the streets
         private void PatrolStreets()
         {
-            Batwoman batwoman = new Batwoman();
-            GameLogic.AddHero(batwoman);
             bool inStreets = true;
             int searchProgress = 0;
             while (inStreets == true)
