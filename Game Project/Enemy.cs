@@ -12,9 +12,9 @@ namespace Game_Project
         {
         public Random randomStats = new Random();
         public string Name;
-        public double MaxHealth;
-        private double _health;
-        public double Health
+        public int MaxHealth;
+        private int _health;
+        public int Health
         {
             get { return _health; }
             set
@@ -47,20 +47,34 @@ namespace Game_Project
                 _turnMeter = value;
             }
         }
+        public List<string> SkillList = new List<string>();
         public int Dexterity;
         public int Money;
         public int WorthXP;
+        public List<string> Loot = new List<string>();
         public bool isDead;
         public bool Rewards;
         public bool Poisoned;
         public int PoisonCounter;
-        public double PoisonDamge;
+        public int PoisonDamage;
       
-        public double BasicAttack()
+        public virtual void BasicAttack(Hero Hero)
         {
-            return Strength;
+            Console.Clear();
+            Console.WriteLine($"{Name} hits {Hero.Name} in the knees! POW!");
+            Thread.Sleep(1200);
+            Console.Clear();
+            Console.BackgroundColor = ConsoleColor.Red;
+            Thread.Sleep(200);
+            Console.Clear();
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Hero.TakeDamage(Strength);
+   
         }
-        public void TakeDamage(double damage)
+        public void TakeDamage(int damage)
         {
             Thread.Sleep(500);
             Health -= damage;
@@ -81,27 +95,88 @@ namespace Game_Project
                 Console.WriteLine($"{Name} is knocked out.");
             }
         }
+       
 
     }
-    public class PenguinThug : Enemy 
-    {
-
+    public class PenguinThug : Enemy
+    { 
         public PenguinThug(int level)
+        
         {
             Level = level;
             Name = "Penguin Thug";
-            MaxHealth = randomStats.Next(0,5) + (randomStats.Next(1,5)*level); //20, 30
+            MaxHealth = randomStats.Next(10,20) + (randomStats.Next(1,5)*level); //20, 30
             Health = MaxHealth;
             TurnMeter = 0;
-            Dexterity = randomStats.Next(6,10);
-            Strength = randomStats.Next(6,10);
+            Dexterity = randomStats.Next(8,12) + (randomStats.Next(1, 4) * level); //20, 30;
+            Strength = randomStats.Next(8,12) + (randomStats.Next(1, 4) * level); //20, 30)
+            Intelligence = randomStats.Next(6, 10) + (randomStats.Next(1, 5) * level); //20, 30
             Money = 50 + (10 * level);
-            WorthXP = 30 + (5*level);
+            WorthXP = 30 + (5 * level);
             isDead = false;
             Rewards = false;
-            
+            new List<string>();
+            new List<string>();
+            Loot.Add("First Aid Kit");
+            SkillList.Add("Tackle (Single)");
         }
+        public override void BasicAttack(Hero Hero)
+        {
+            Console.Clear();
+            Console.WriteLine($"{Name} hits {Hero.Name} in the knees! POW!");
+            Thread.Sleep(1200);
+            Console.Clear();
+            Console.BackgroundColor = ConsoleColor.Red;
+            Thread.Sleep(200);
+            Console.Clear();
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Hero.TakeDamage(Strength);
+        }
+        public PenguinThug() {  }
     }
+    public class PoisonThug : Enemy
+    {
+        public override void BasicAttack(Hero Hero)
+        {
+            Console.Clear();
+            Console.WriteLine($"{Name} swipes at {Hero.Name} with a knife! SWISH!!!");
+            Thread.Sleep(1200);
+            Console.Clear();
+            Console.BackgroundColor = ConsoleColor.Red;
+            Thread.Sleep(200);
+            Console.Clear();
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Hero.TakeDamage(Strength);
+        }
+        public PoisonThug(int level)
+        {
+            Level = level;
+            Name = "Poison Thug";
+            MaxHealth = randomStats.Next(10, 20) + (randomStats.Next(1, 5) * level); //20, 30
+            Health = MaxHealth;
+            TurnMeter = 0;
+            Dexterity = randomStats.Next(6, 10) + (randomStats.Next(1, 5) * level); //20, 30;
+            Strength = randomStats.Next(6, 10) + (randomStats.Next(1, 5) * level); //20, 30)
+            Intelligence = randomStats.Next(6, 10) + (randomStats.Next(1, 5) * level); //20, 30
+            Money = 50 + (10 * level);
+            WorthXP = 30 + (5 * level);
+            isDead = false;
+            Rewards = false;
+            new List<string>();
+            new List<string>();
+            SkillList.Add("Poison Strike (Single)");
+            Loot.Add("Antitote");
+            Loot.Add("First Aid Kit");
+        }
+
+    }
+
     public class Penguin : Enemy
     {
         public Penguin()

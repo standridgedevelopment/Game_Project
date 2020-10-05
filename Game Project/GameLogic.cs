@@ -15,7 +15,8 @@ namespace Game_Project
         static List<Enemy> _areaEnemies = new List<Enemy>();
         public static List<Enemy> _currentEnemies = new List<Enemy>();
         public static List<Hero> _heroes = new List<Hero>();
-        static double experienceForFight;
+        public static List<String> LootForFight = new List<string>();
+        static int experienceForFight;
         static int moneyForFight;
         static int enemiesDefeated;
         public static int Money;
@@ -29,14 +30,29 @@ namespace Game_Project
                 Thread.Sleep(100);
                 var PenguinT2 = new PenguinThug(randomNum.Next(1, 4));
                 Thread.Sleep(100);
-                var PenguinT3 = new PenguinThug(randomNum.Next(1, 4));
+                var PenguinT3 = new PenguinThug(randomNum.Next(2, 5));
                 Thread.Sleep(100);
-                var PenguinT4 = new PenguinThug(randomNum.Next(1, 4));
+                var PenguinT4 = new PenguinThug(randomNum.Next(2, 5));
                 Thread.Sleep(100);
                 _areaEnemies.Add(PenguinT1);
                 _areaEnemies.Add(PenguinT2);
                 _areaEnemies.Add(PenguinT3);
                 _areaEnemies.Add(PenguinT4);
+            }
+            if (enemyType.GetType() == typeof(PoisonThug))
+            {
+                var PoisonT1 = new PoisonThug(randomNum.Next(1, 4));
+                Thread.Sleep(100);
+                var PoisonT2 = new PoisonThug(randomNum.Next(1, 4));
+                Thread.Sleep(100);
+                var PoisonT3 = new PoisonThug(randomNum.Next(2, 5));
+                Thread.Sleep(100);
+                var PoisonT4 = new PoisonThug(randomNum.Next(2, 5));
+                Thread.Sleep(100);
+                _areaEnemies.Add(PoisonT1);
+                _areaEnemies.Add(PoisonT2);
+                _areaEnemies.Add(PoisonT3);
+                _areaEnemies.Add(PoisonT4);
             }
         }
         public static void AddCurrentEnemy(Enemy enemy)
@@ -58,12 +74,15 @@ namespace Game_Project
             else if (amountOfEnemies <= 7)
             {
                 AddCurrentEnemy(_areaEnemies[randomNum.Next(0, _areaEnemies.Count)]);
+                Thread.Sleep(100);
                 AddCurrentEnemy(_areaEnemies[randomNum.Next(0, _areaEnemies.Count)]);
             }
             else
             {
                 AddCurrentEnemy(_areaEnemies[randomNum.Next(0, _areaEnemies.Count)]);
+                Thread.Sleep(100);
                 AddCurrentEnemy(_areaEnemies[randomNum.Next(0, _areaEnemies.Count)]);
+                Thread.Sleep(100);
                 AddCurrentEnemy(_areaEnemies[randomNum.Next(0, _areaEnemies.Count)]);
             }
         }
@@ -175,7 +194,7 @@ namespace Game_Project
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine($"{enemy.Name} takes poison damage. OUCH!");
                     Thread.Sleep(500);
-                    enemy.TakeDamage(enemy.PoisonDamge);
+                    enemy.TakeDamage(enemy.PoisonDamage);
                     Console.ForegroundColor = ConsoleColor.White;
                     enemy.PoisonCounter -= 1;
                 }
@@ -248,7 +267,7 @@ namespace Game_Project
             bool combatInProgress = true;
             foreach (Hero Hero in _heroes)
             {
-                if (Hero.TurnMeter >= 50)
+                if (Hero.TurnMeter >= 100)
                 {
                     Hero.TurnMeter = 0;
                     HeroTakeTurn(Hero);
@@ -502,7 +521,7 @@ namespace Game_Project
             if (correctEnemyChoice >= 0 && correctEnemyChoice < _currentEnemies.Count)
             {
                 Console.Clear();
-                double damage = Hero.BasicAttack(_currentEnemies[correctEnemyChoice]);
+                int damage = Hero.BasicAttack(_currentEnemies[correctEnemyChoice]);
                 _currentEnemies[correctEnemyChoice].TakeDamage(damage);
                 Console.ForegroundColor = ConsoleColor.White;
 
@@ -610,7 +629,7 @@ namespace Game_Project
             }
             if (correctHeroChoice < _heroes.Count)
             {
-                if (_currentEnemies[correctHeroChoice].isDead == true)
+                if (_heroes[correctHeroChoice].isDead == true)
                 {
                     Console.WriteLine("They're unconcious.\n" +
                            "Press any key to continue...");
@@ -643,27 +662,21 @@ namespace Game_Project
         {
             int heroTarget = randomNum.Next(0, _heroes.Count);
             //Hero target = _heroes[heroTarget];
-            int chooseAttack = randomNum.Next(1, 2);
+            int chooseAttack = randomNum.Next(1, 3);
             switch (chooseAttack)
             {
                 case 1:
-                    //enemy.Attack(target);
-                    double damage = enemy.BasicAttack();
-
-                    Console.Clear();
-                    Console.WriteLine($"{enemy.Name} hits {_heroes[heroTarget].Name} in the knees! POW!");
-                    Thread.Sleep(1000);
-                    Console.Clear();
-                    Console.BackgroundColor = ConsoleColor.Red;
-                    Thread.Sleep(200);
-                    Console.Clear();
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    _heroes[heroTarget].TakeDamage(damage);
-
+                    //Enemy Basic Attack
+                    enemy.BasicAttack(_heroes[heroTarget]);
                     Thread.Sleep(2000);
+                    break;
+                case 2:
+                    //Enemy SKill
+                    string enemyUseSkill = enemy.SkillList[randomNum.Next(0, enemy.SkillList.Count)];
+                    if (enemyUseSkill.Contains("Single"))
+                    {
+                        EnemySkillBook.EnemyUseAttackSingleSkill(enemy, _heroes[heroTarget], enemyUseSkill);
+                    }
                     break;
 
                 default:
@@ -681,6 +694,10 @@ namespace Game_Project
                     moneyForFight += Enemy.Money;
                     Enemy.Rewards = true;
                     enemiesDefeated += 1;
+                    foreach (var loot in Enemy.Loot)
+                    {
+                        LootForFight.Add(loot);
+                    }
                 }
                 if (enemiesDefeated == _currentEnemies.Count)
                 {
@@ -689,7 +706,50 @@ namespace Game_Project
             }
             return combatInProgress;
         }
-        static void VictoryScreen(int moneyForFight, double experienceForFight)
+        static void ReceiveLoot()
+        {
+            string lootResults = "";
+            foreach (var loot in LootForFight)
+            {
+                if (loot == "First Aid Kit")
+                {
+                    int rollForItem = randomNum.Next(1, 4);
+                    switch (rollForItem)
+                    {
+                        case 1:
+                            FirstAidKit firstAidKit1 = new FirstAidKit();
+                            InventorySystem.AddItem(firstAidKit1);
+                            lootResults += "First Aid Kit\n";
+                            break;
+                        default:
+                            break;
+
+                    }
+                }
+                if (loot == "Antidote")
+                {
+                    int rollForItem = randomNum.Next(1, 4);
+                    switch (rollForItem)
+                    {
+                        case 1:
+                            Antidote antidote = new Antidote();
+                            InventorySystem.AddItem(antidote);
+                            lootResults += "Antidote\n";
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            if (lootResults != "")
+            {
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine("You have recieved:");
+                Console.WriteLine(lootResults);
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+        }
+        static void VictoryScreen(int moneyForFight, int experienceForFight)
         {
             Console.Clear();
             /*System.Media.SoundPlayer sound2 =
@@ -701,7 +761,9 @@ namespace Game_Project
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"${moneyForFight} recieved.");
             Thread.Sleep(500);
-
+            Console.ForegroundColor = ConsoleColor.White;
+            ReceiveLoot();
+            LootForFight.Clear();
             _currentEnemies.Clear();
             _areaEnemies.Clear();
             foreach (var Hero in _heroes)

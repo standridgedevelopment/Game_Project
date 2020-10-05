@@ -61,6 +61,8 @@ namespace Game_Project
         {
             FirstAidKit firstAidKit1 = new FirstAidKit();
             InventorySystem.AddItem(firstAidKit1);
+            Antidote antidote1 = new Antidote();
+            InventorySystem.AddItem(antidote1);
             /*FirstAidKit firstAidKit2 = new FirstAidKit();
             FirstAidKit firstAidKit3 = new FirstAidKit();
 \           InventorySystem.AddItem(firstAidKit2);
@@ -158,6 +160,8 @@ namespace Game_Project
                 {
                 var enemy1 = new PenguinThug(1);
                 GameLogic.AddAreaEnemy(enemy1);
+                var enemy2 = new PoisonThug(1);
+                GameLogic.AddAreaEnemy(enemy2);
                 /*System.Media.SoundPlayer sound =
                 new System.Media.SoundPlayer();
                 sound.SoundLocation = @"\ElevenFiftyProjects\SD 65\Game_Project\Field.wav";

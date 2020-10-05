@@ -13,7 +13,7 @@ namespace Game_Project
     {
         public static void HeroUseAttackSingleSkill(Enemy enemy, Hero Hero, string skill)
         {
-            double damage = 0;
+            int damage = 0;
             string useSkill = skill;
             if (useSkill.Contains("Batarang"))
             {
@@ -28,7 +28,7 @@ namespace Game_Project
                 Console.WriteLine($"{enemy.Name} has been poisoned");
                 Thread.Sleep(500);
                 Console.ForegroundColor = ConsoleColor.White;
-                enemy.PoisonDamge = damage;
+                enemy.PoisonDamage = damage;
                 enemy.Poisoned = true;
                 enemy.PoisonCounter = 5;
             }
@@ -36,7 +36,7 @@ namespace Game_Project
         public static void HeroUseAttackAllSkill(Hero Hero, string skill)
         {
             Console.Clear();
-            double damage = 0;
+            int damage = 0;
             string useSkill = skill;
             //Nightwing Skills
             if (useSkill.Contains("Shark Repellent"))
@@ -69,14 +69,14 @@ namespace Game_Project
             }
         }        
         //Nightwing Skills
-        public static double SharkRepellent(Hero Hero)
+        public static int SharkRepellent(Hero Hero)
         {
             GameLogic._heroes[0].Energy -= 20;
             Console.WriteLine($"That's not a shark!!! {Hero.Name} sprays Shark Repellent wildly. It goes in everyones' eyes! ARGHHHHHHH!!!!!");
             Thread.Sleep(1500);
             return Hero.Intelligence;
         }
-        public static double Batarang(Enemy enemy, Hero Hero)
+        public static int Batarang(Enemy enemy, Hero Hero)
         {
             Hero.Energy -= 20;
             Console.WriteLine($"{Hero.Name} thows a Batarang at {enemy.Name}'s face! TWAK!!");
@@ -86,18 +86,57 @@ namespace Game_Project
         
 
         //Batwoman Skills
-        public static double SummonRK1(Hero Hero)
+        public static int SummonRK1(Hero Hero)
         {
             Hero.Energy -= 35;
             Console.WriteLine($"You hear the roar of an engine! {Hero.Name}'s trusty motorcycle opens fire.");
             return Hero.Intelligence;
         }
-        public static double PoisonDart(Enemy enemy, Hero Hero)
+        public static int PoisonDart(Enemy enemy, Hero Hero)
         {
             Hero.Energy -= 20;
             Console.WriteLine($"{Hero.Name} fires a wrist-mounted poison dart at {enemy.Name}. TWOOP!");
             Thread.Sleep(1500);
             return Hero.Intelligence/2;
+        }
+    }
+    static public class EnemySkillBook
+    {
+        public static void EnemyUseAttackSingleSkill(Enemy enemy, Hero Hero, string skill)
+        {
+            int damage = 0;
+            string useSkill = skill;
+            if (useSkill.Contains("Tackle"))
+            {
+                damage = Tackle(enemy, Hero);
+                Hero.TakeDamage(damage);
+            }
+            if (useSkill.Contains("Poison Strike"))
+            {
+                damage = PoisonStrike(enemy, Hero);
+                Hero.TakeDamage(damage);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"{Hero.Name} has been poisoned");
+                Thread.Sleep(500);
+                Console.ForegroundColor = ConsoleColor.White;
+                Hero.PoisonDamage = damage;
+                Hero.Poisoned = true;
+                Hero.PoisonCounter = 5;
+            }
+        }
+        public static int Tackle(Enemy enemy, Hero Hero)
+        {
+            Console.Clear();
+            Console.WriteLine($"{enemy.Name} viciously tackles {Hero.Name}! THUD!!");
+            Thread.Sleep(1500);
+            return (int)(enemy.Strength * 1.5);
+        }
+        public static int PoisonStrike(Enemy enemy, Hero Hero)
+        {
+            Console.Clear();
+            Console.WriteLine($"{enemy.Name} strikes {Hero.Name} with a poison coated blade");
+            Thread.Sleep(1500);
+            return enemy.Intelligence/2;
         }
     }
 }

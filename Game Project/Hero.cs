@@ -13,12 +13,12 @@ namespace Game_Project
     public abstract class Hero
     {
         public string Name;
-        public double MaxHealth
+        public int MaxHealth
         {
             get => Vitality * 10;
         }
-        private double _health;
-        public double Health
+        private int _health;
+        public int Health
         {
             get { return _health; }
             set
@@ -73,8 +73,8 @@ namespace Game_Project
                 _turnMeter = value;
             }
         }
-        private double _xp;
-        public double XP
+        private int _xp;
+        public int XP
         {
             get { return _xp; }
             set
@@ -87,7 +87,7 @@ namespace Game_Project
                 else _xp = value;
             }
         }
-        public double xpForLevelUp;
+        public int xpForLevelUp;
         public List<string> SkillList = new List<string>();
         public int SkillNumber;
         public string SuperHeroName;
@@ -104,22 +104,32 @@ namespace Game_Project
         {
             
         }
-        public double BasicAttack(Enemy enemy)
+        public int BasicAttack(Enemy enemy)
         {
             Console.WriteLine($"{Name} punches {enemy.Name} in the face. POW!");
             Thread.Sleep(1000);
             return Strength;
         }
-        public void TakeDamage(double damage)
+        public void TakeDamage(int damage)
         {
+            Thread.Sleep(500);
             Health -= damage;
+            Console.Clear();
+            Console.BackgroundColor = ConsoleColor.Red;
+            Thread.Sleep(200);
+            Console.Clear();
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Red;
+
             Console.WriteLine($"{Name} takes {damage} damage!");
             Thread.Sleep(400);
         }
         public bool runAway;
         public bool Poisoned;
         public int PoisonCounter;
-        public double PoisonDamage;
+        public int PoisonDamage;
+        public bool isDead;
        
     }
     public class Nightwing : Hero

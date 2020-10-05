@@ -89,12 +89,75 @@ namespace Game_Project
             }
 
         }
-        public FirstAidKit()
+    }
+    public class Antidote : IItem, IConsumable
+    {
+        public string Name
         {
-            Cost = 100;
-            Value = 70;
-            ID = 1;
+            get
+            {
+                return $"Antidote";
+            }
+            set { }
         }
+        public string CombatName
+        {
+            get
+            {
+                return $"Antidote (Cure Poison) x{Quanity}";
+            }
+            set { }
+        }
+        public int Cost
+        {
+            get
+            {
+                return 100;
+            }
+            set { }
+        }
+        public int Value
+        {
+            get
+            {
+                return 70;
+            }
+            set { }
+        }
+        public int ID
+        {
+            get
+            {
+                return 2;
+            }
+            set { }
+        }
+        public int Quanity { get; set; }
+       
+        public void Sell()
+        {
+            Console.WriteLine($"You have sold a {Name} for ${Value}.");
+            GameLogic.Money += Value;
+            Console.WriteLine($"You now have ${GameLogic.Money}");
+        }
+        public void UseItem(Hero Hero, IItem item)
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine($"{Hero.Name} uses antidote!");
+            Thread.Sleep(500);
+            if (Hero.Poisoned == true)
+            {
+                Console.WriteLine($"{Hero.Name} is no longer poisoned! Heck yeah!");
+            }
+            else Console.WriteLine("Antiode had no effect. Bummer!");
+            Console.ForegroundColor = ConsoleColor.White;
+            Hero.Poisoned = false;
+            Quanity -= 1;
+            if (Quanity <= 0)
+            {
+                InventorySystem.RemoveItem(item);
+            }
 
+        }
     }
 }
